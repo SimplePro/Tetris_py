@@ -16,8 +16,8 @@ board = [[0 for _ in range(10+8)] for _ in range(20+8)]
 block_reach = []
 
 def generate_new_block():
-    # new_block = sample(list(BLOCKS.keys()), k=1)[0]
-    new_block = "I"
+    new_block = sample(list(BLOCKS.keys()), k=1)[0]
+    # new_block = "I"
     start_x, start_y = 7, 0
 
     for i in range(5):
@@ -193,7 +193,7 @@ def step(action):
     
     print_board(current_block)
 
-    if score >= 20:
+    if score >= 10:
         os.system("clear")
         print(f"------- SUCCESS! -------")
         print(f"---- SCORE: {score} ----")
