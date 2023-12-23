@@ -1,23 +1,20 @@
-from pprint import pprint
 import keyboard
 from random import sample
 import os
 from time import sleep
 import sys
-from copy import deepcopy
 
 from blocks import BLOCKS
 
-# while True:
-    # left, right, up, down, space
-
+# (20+8) x (10+8) size
 board = [[0 for _ in range(10+8)] for _ in range(20+8)]
 
+# is current_block reached
 block_reach = []
 
+# generate new random block 
 def generate_new_block():
     new_block = sample(list(BLOCKS.keys()), k=1)[0]
-    # new_block = "I"
     start_x, start_y = 7, 0
 
     for i in range(5):
@@ -28,7 +25,7 @@ def generate_new_block():
 
     return [start_x, start_y, new_block, 0]
 
-
+# print board with current_block
 def print_board(current_block):
 
     os.system("clear")
@@ -43,27 +40,24 @@ def print_board(current_block):
                 else:
                     if block_matrix[i-y][j-x]: print("#", end=" ")
                     else: print("-", end=" ")
-                    # print(block_matrix[i-y][j-x], end=" ")
 
             else:
                 if board[i][j]: print("#", end=" ")
                 else:
                     print("-", end=" ")
-                # print(board[i][j], end=" ")
 
         print(end="\n")
 
     sleep(0.075)
 
+# is gameover
 def is_gameover():
-    # pprint(board)
     for i in range(5):
         if 1 in board[i]: return True
 
-    # sys.exit(0)
-
     return False
 
+# get complete line index
 def get_completed_line():
     line_index = []
 
@@ -73,7 +67,7 @@ def get_completed_line():
 
     return line_index
             
-
+# current_block and other blocks are overlapped
 def is_overlapped(block_matrix, x, y):
     for i in range(4):
         for j in range(4):
@@ -82,7 +76,7 @@ def is_overlapped(block_matrix, x, y):
     
     return False
 
-
+# is action ok
 def is_ok(current_block, action):
     x, y, block, direction = current_block
     block_matrix = BLOCKS[block][direction]
@@ -100,10 +94,6 @@ def is_ok(current_block, action):
             if is_break: break
 
         left_x += x_
-
-        # print(block_matrix)
-        # print(left_x)
-        # sys.exit(0)
 
         if left_x == 4 or is_overlapped(block_matrix, x-1, y): return False
 
@@ -157,16 +147,17 @@ def is_ok(current_block, action):
         return True
 
 
+# construct current_block in board
 def construct_block(current_block):
     global board
     x, y, block, direction = current_block
     block_matrix = BLOCKS[block][direction]
     for i in range(4):
         for j in range(4):
-            # print(i, j)
             if block_matrix[i][j] == 1:
                 board[y+i][x+j] = 1
 
+# step per frame
 def step(action):
     global current_block, score
     
@@ -213,13 +204,6 @@ def step(action):
         if block_reach[-3:].count(1) == 3:
             construct_block(current_block)
 
-            # gameover = is_gameover()
-            # print(gameover)
-
-            # if len(cnt) > 9:
-            #     pprint(board)
-            #     sys.exit(0)
-
             if is_gameover():
                 print("------ GAME OVER! ------")
                 print(f"---- SCORE: {score} ----")
@@ -231,14 +215,9 @@ def step(action):
                 temp_arr = board[:line_index]
                 board[:line_index] = [[0 for _ in range(10+8)] for _ in range(line_index)]
                 board[1:line_index+1] = temp_arr
-                # pprint(board)
-
-                # for i in range(len(temp_arr)):
-                #     board[i+1] = temp_arr[i]
 
                 score += 1
 
-            # generate new block
             current_block = generate_new_block()
             cnt.append(0)
             block_reach.append(0)
