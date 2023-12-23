@@ -130,6 +130,12 @@ def is_ok(current_block, action):
     
     elif action == "up":
         rotated_block_matrix = BLOCKS[block][(direction+1)%4]
+        
+        for i in range(4):
+            for j in range(4):
+                if x+j < 4 or 13 < x+j or 23 < y+i:
+                    if rotated_block_matrix[i][j] == 1: return False
+        
         if is_overlapped(rotated_block_matrix, x, y): return False
 
         return True
