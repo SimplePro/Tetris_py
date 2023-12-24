@@ -12,9 +12,13 @@ board = [[0 for _ in range(10+8)] for _ in range(20+8)]
 # is current_block reached
 block_reach = []
 
+block_list = [sample(list(BLOCKS.keys()), k=1)[0] for _ in range(2)]
+
 # generate new random block 
 def generate_new_block():
-    new_block = sample(list(BLOCKS.keys()), k=1)[0]
+    new_block = block_list[-2]
+    block_list.append(sample(list(BLOCKS.keys()), k=1)[0])
+
     start_x, start_y = 7, 0
 
     for i in range(5):
@@ -30,6 +34,13 @@ def print_board(current_block):
 
     os.system("clear")
     print(f"---- SCORE: {score} ----", end="\n\n")
+
+    print(f"---- NEXT BLOCK ----", end="\n\n")
+    next_block_matrix = BLOCKS[block_list[-2]][0]
+    for i in range(4):
+        print("    " + " ".join(map(str, next_block_matrix[i])).replace("1", "#").replace("0", "-"))
+    
+    print(end="\n\n\n")
 
     x, y, block, direction = current_block
     block_matrix = BLOCKS[block][direction]
