@@ -218,7 +218,7 @@ def step(action):
     
     print_board(current_block)
 
-    if score >= 1:
+    if score >= 10:
         print(f"------- SUCCESS! -------")
         print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----")
         return True
@@ -292,7 +292,7 @@ while True:
     is_quit = step(action)
     if is_quit: break
 
-if score >= 1:
+if score >= 10:
     end_time = time()
     t = end_time - start_time
 
