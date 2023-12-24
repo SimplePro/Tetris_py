@@ -5,6 +5,10 @@ from time import sleep, time
 
 from blocks import BLOCKS
 
+
+frame_count = []
+t = 0
+
 # (20+8) x (10+8) size
 board = []
 
@@ -44,9 +48,13 @@ def generate_new_block():
 # print board with current_block
 def print_board(current_block):
 
+    global t
+
+    t = time() - start_time
+
     os.system("clear")
     print(f"----- USER: {student_name} -----")
-    print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----", end="\n\n")
+    print(f"---- SCORE: {score}, TIME: {round(t, 4)} ----", end="\n\n")
 
     print(f"---- NEXT BLOCK ----", end="\n\n")
     next_block_matrix = BLOCKS[block_list[-2]][0]
@@ -54,7 +62,7 @@ def print_board(current_block):
         print("    ", end="")
         for j in range(4):
             if next_block_matrix[i][j] == 1: print("O", end=" ")
-            else: print("0", end=" ")
+            else: print("-", end=" ")
         print(end="\n")
     
     print(end="\n\n\n")
@@ -77,6 +85,7 @@ def print_board(current_block):
         print(end="\n")
 
     sleep(0.075)
+    frame_count.append(0)
 
 # is gameover
 def is_gameover():
@@ -220,20 +229,21 @@ def step(action):
 
     if score >= 10:
         print(f"------- SUCCESS! -------")
-        print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----")
+        print(f"---- SCORE: {score}, TIME: {round(t, 4)} ----")
         return True
 
     if is_ok(current_block, action="down"):
-        current_block[1] += 1
-        print_board(current_block)
+        if len(frame_count) % 3 == 0:
+            current_block[1] += 1
+            print_board(current_block)
     
     else:
-        if block_reach[-3:].count(1) == 3:
+        if block_reach[-6:].count(1) == 6:
             construct_block(current_block)
 
             if is_gameover():
                 print("------ GAME OVER! ------")
-                print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----")
+                print(f"---- SCORE: {score}, TIME: {round(t, 4)} ----")
                 return True
             
             completed_line = get_completed_line()
@@ -253,6 +263,7 @@ def step(action):
 
     return False
 
+os.system("clear")
 print("---------- 1학년 14반 테트리스 게임 ----------")
 attendance_index = int(input("출석번호 입력: ")) - 1
 
@@ -260,8 +271,8 @@ students = []
 
 with open("students.txt", "r") as f:
     for line in f.readlines():
-        name, t = line.split()
-        students.append([name, float(t)])
+        name, t_ = line.split()
+        students.append([name, float(t_)])
 
 student_name, student_t = students[attendance_index]
 
@@ -294,7 +305,6 @@ while True:
 
 if score >= 10:
     end_time = time()
-    t = end_time - start_time
 
     if t < student_t or student_t == -1:
         students[attendance_index][1] = t
