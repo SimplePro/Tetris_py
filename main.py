@@ -317,7 +317,7 @@ if score >= 10:
             if i != len(students)-1:
                 s += "\n"
         
-        with open("students.txt", "w") as f:
+        with open("students.txt", "w", encoding="UTF8") as f:
             f.write(s)
             
         print(f"기록이 {round(t, 4)}초로 갱신되었습니다.")
