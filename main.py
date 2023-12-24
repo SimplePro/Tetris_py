@@ -269,7 +269,7 @@ attendance_index = int(input("출석번호 입력: ")) - 1
 
 students = []
 
-with open("students.txt", "r") as f:
+with open("students.txt", "r", encoding="UTF8") as f:
     for line in f.readlines():
         name, t_ = line.split()
         students.append([name, float(t_)])
