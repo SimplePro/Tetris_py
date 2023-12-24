@@ -219,13 +219,11 @@ def step(action):
                 score += 1
 
             current_block = generate_new_block()
-            cnt.append(0)
             block_reach.append(0)
         
         else:
             block_reach.append(1)
 
-cnt = [0]
 score = 0
 current_block = generate_new_block()
 
