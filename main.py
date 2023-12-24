@@ -1,8 +1,7 @@
 import keyboard
 from random import randint
 import os
-from time import sleep
-import sys
+from time import sleep, time
 
 from blocks import BLOCKS
 
@@ -46,7 +45,8 @@ def generate_new_block():
 def print_board(current_block):
 
     os.system("clear")
-    print(f"---- SCORE: {score} ----", end="\n\n")
+    print(f"----- USER: {student_name} -----")
+    print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----", end="\n\n")
 
     print(f"---- NEXT BLOCK ----", end="\n\n")
     next_block_matrix = BLOCKS[block_list[-2]][0]
@@ -218,11 +218,10 @@ def step(action):
     
     print_board(current_block)
 
-    if score >= 10:
-        os.system("clear")
+    if score >= 1:
         print(f"------- SUCCESS! -------")
-        print(f"---- SCORE: {score} ----")
-        sys.exit(0)       
+        print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----")
+        return True
 
     if is_ok(current_block, action="down"):
         current_block[1] += 1
@@ -234,8 +233,8 @@ def step(action):
 
             if is_gameover():
                 print("------ GAME OVER! ------")
-                print(f"---- SCORE: {score} ----")
-                sys.exit(0)
+                print(f"---- SCORE: {score}, TIME: {round(time() - start_time, 4)} ----")
+                return True
             
             completed_line = get_completed_line()
 
@@ -252,6 +251,33 @@ def step(action):
         else:
             block_reach.append(1)
 
+    return False
+
+print("---------- 1학년 14반 테트리스 게임 ----------")
+attendance_index = int(input("출석번호 입력: ")) - 1
+
+students = []
+
+with open("students.txt", "r") as f:
+    for line in f.readlines():
+        name, t = line.split()
+        students.append([name, float(t)])
+
+student_name, student_t = students[attendance_index]
+
+print(f"안녕하세요 {student_name}님")
+
+if student_t == -1:
+    print(f"현재 {student_name}님의 기록은 없습니다.")
+else:
+    print(f"현재 {student_name}님의 기록은 {round(student_t, 4)}초입니다.")
+
+for i in range(1, 4):
+    print("\r%d"%(4-i), end="")
+    sleep(1)
+
+start_time = time()
+
 score = 0
 current_block = generate_new_block()
 
@@ -263,4 +289,25 @@ while True:
     for act in action_list:
         if keyboard.is_pressed(act): action = act
 
-    step(action)
+    is_quit = step(action)
+    if is_quit: break
+
+if score >= 1:
+    end_time = time()
+    t = end_time - start_time
+
+    if t < student_t or student_t == -1:
+        students[attendance_index][1] = t
+
+        s = ""
+
+        for i in range(len(students)):
+            s += f"{students[i][0]} {students[i][1]}"
+
+            if i != len(students)-1:
+                s += "\n"
+        
+        with open("students.txt", "w") as f:
+            f.write(s)
+            
+        print(f"기록이 {round(t, 4)}초로 갱신되었습니다.")
