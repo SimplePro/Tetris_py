@@ -1,5 +1,5 @@
 import keyboard
-from random import sample
+from random import randint
 import os
 from time import sleep
 import sys
@@ -7,23 +7,36 @@ import sys
 from blocks import BLOCKS
 
 # (20+8) x (10+8) size
-board = [[0 for _ in range(10+8)] for _ in range(20+8)]
+board = []
+
+for i in range(20+8):
+    temp_arr = []
+    for j in range(10+8):
+        temp_arr.append(0)
+
+    board.append(temp_arr)
 
 # is current_block reached
 block_reach = []
 
-block_list = [sample(list(BLOCKS.keys()), k=1)[0] for _ in range(2)]
+block_list = []
+
+for i in range(2):
+    block_list.append(
+        randint(0, len(BLOCKS)-1)
+    )
 
 # generate new random block 
 def generate_new_block():
     new_block = block_list[-2]
-    block_list.append(sample(list(BLOCKS.keys()), k=1)[0])
+    block_list.append(
+        randint(0, len(BLOCKS)-1)
+    )
 
     start_x, start_y = 7, 0
 
     for i in range(5):
-        if is_ok([start_x, i, new_block, 0], action="down"): continue
-        else: break
+        if not is_ok([start_x, i, new_block, 0], action="down"): break
 
     start_y = i
 
@@ -37,8 +50,12 @@ def print_board(current_block):
 
     print(f"---- NEXT BLOCK ----", end="\n\n")
     next_block_matrix = BLOCKS[block_list[-2]][0]
-    for i in range(4):
-        print("    " + " ".join(map(str, next_block_matrix[i])).replace("1", "O").replace("0", "-"))
+    for i in range(4): 
+        print("    ", end="")
+        for j in range(4):
+            if next_block_matrix[i][j] == 1: print("O", end=" ")
+            else: print("0", end=" ")
+        print(end="\n")
     
     print(end="\n\n\n")
 
@@ -77,7 +94,7 @@ def get_completed_line():
             line_index.append(i)
 
     return line_index
-            
+
 # current_block and other blocks are overlapped
 def is_overlapped(block_matrix, x, y):
     for i in range(4):
