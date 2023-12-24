@@ -38,7 +38,7 @@ def print_board(current_block):
     print(f"---- NEXT BLOCK ----", end="\n\n")
     next_block_matrix = BLOCKS[block_list[-2]][0]
     for i in range(4):
-        print("    " + " ".join(map(str, next_block_matrix[i])).replace("1", "#").replace("0", "-"))
+        print("    " + " ".join(map(str, next_block_matrix[i])).replace("1", "O").replace("0", "-"))
     
     print(end="\n\n\n")
 
@@ -47,13 +47,13 @@ def print_board(current_block):
     for i in range(4, 24):
         for j in range(4, 14):
             if y <= i and i < y+4 and x <= j and j < x+4:
-                if board[i][j] == 1: print("#", end=" ")
+                if board[i][j] == 1: print("O", end=" ")
                 else:
-                    if block_matrix[i-y][j-x]: print("#", end=" ")
+                    if block_matrix[i-y][j-x]: print("O", end=" ")
                     else: print("-", end=" ")
 
             else:
-                if board[i][j]: print("#", end=" ")
+                if board[i][j]: print("O", end=" ")
                 else:
                     print("-", end=" ")
 
